@@ -1,0 +1,94 @@
+pipeline {
+    agent any
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+        PYTHON_PATH="/usr/bin/python2.7"
+        AWS_DEFAULT_REGION = 'us-east-2'
+    }
+    options {
+      disableConcurrentBuilds()
+      parallelsAlwaysFailFast()
+      timestamps()
+      withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'AWS_Keys',
+            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+            ]])
+    }
+    stages{
+        stage('Clear Workspaces') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+                cleanWs()
+                sh 'env'
+            }//step
+        }//stage
+        stage('install Ec2 grafana ') {
+            steps{
+                    sh 'pwd'
+                    checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'CleanCheckout']],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [
+                    [url: 'https://github.com/ezequiellladoce/EC2_Grafana.git', credentialsId: '']
+                    ]])
+                    sh'ls'
+                    sh 'pwd'
+                    sh 'ls -l'
+                    sh 'terraform --version'
+                    sh 'terraform init'
+                    sh 'terraform plan'
+                    sh 'terraform apply -auto-approve'
+            }//steps
+        } //stage
+        stage('Get public ip') {
+            steps{
+                sh 'pwd'
+                checkout([$class: 'GitSCM',
+                branches: [[name: '*/main']],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [[$class: 'CleanCheckout']],
+                submoduleCfg: [],
+                userRemoteConfigs: [
+                [url: 'https://github.com/ezequiellladoce/Ansible_Grafana.git', credentialsId: '']
+                ]])
+                sh 'pwd'
+                sh 'ls -l'
+                dir('Output_ip'){
+                    sh'ls'
+                    sh 'pwd'
+                    sh 'ls -l'
+                    sh 'terraform --version'
+                    sh 'terraform init'
+                    sh 'terraform plan'
+                    sh 'terraform apply -auto-approve'
+                    sh 'echo "[grafana_server]" > hosts'
+                    sh 'terraform output pub_ip >> hosts'
+                    sh 'mv hosts ../Ansible'
+                }//dir
+            } // steps
+        } // stage
+        stage('Configure instance') {
+            steps{
+                sh 'pwd'
+                sh 'ls -l'
+                dir('Ansible'){
+                sh '''
+                    #!/bin/bash
+                    ls
+                    pwd
+                    ls -l
+                    aws secretsmanager get-secret-value --secret-id "ec2-key-c" --region "us-east-2" --query 'SecretString' --output text > key.pem
+                    chmod 400 key.pem
+                    ansible -i hosts -m ping grafana_server -u ubuntu --key-file key.pem
+                    ansible-playbook playbook.yml -u ubuntu --key-file key.pem -i hosts
+                '''
+                }//dir
+            } // steps
+        } // stage
+    }// stages
+}//pipeline
