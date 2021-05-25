@@ -99,9 +99,7 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -l'
                 dir('ConfigGrafana'){
-                   environment {
-                      SERVER_IP = sh 'cat server_ip'
-                    }
+                sh 'echo SERVER_IP=$(cat server_ip)'                  
                 sh '''
                     #!/bin/bash
                     ls
