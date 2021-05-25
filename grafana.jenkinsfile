@@ -100,7 +100,7 @@ pipeline {
                 sh 'ls -l'
                 dir('ConfigGrafana'){
                    environment {
-                      SERVER_IP = sh(script: 'cat server_ip' ).trim()
+                      SERVER_IP = sh(script: 'cat server_ip', , returnStdout: true).trim()
                     }
                 sh '''
                     #!/bin/bash
