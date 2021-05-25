@@ -99,15 +99,15 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -l'
                 dir('ConfigGrafana'){
-                sh 'echo SERVER_IP=$(cat server_ip)'
-                sh 'echo $SERVER_IP'
-                sh 'export SERVER_IP=$(cat server_ip)'
-                sh 'env'
                 sh '''
                     #!/bin/bash
                     ls
                     pwd
                     ls -l
+                    echo "SERVER_IP=$(cat server_ip)"
+                    echo $SERVER_IP
+                    SERVER_IP=$(cat server_ip)
+                    env
                     aws s3 cp s3://grafanadatasourse/aws/amazon-ec2_rev2.json dashboard-ec2.json
                     mv dashboard-ec2.json grafana_config/tasks
                     ansible-playbook configure.yml -u ubuntu --key-file ../Ansible/key.pem -i ../Ansible/hosts
