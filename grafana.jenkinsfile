@@ -99,14 +99,12 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -l'
                 dir('ConfigGrafana'){
-                sh 'echo SERVER_IP=$(cat server_ip)'                  
+                sh 'echo SERVER_IP=$(cat server_ip)'
                 sh '''
                     #!/bin/bash
                     ls
                     pwd
                     ls -l
-                    aws s3 cp s3://grafanadatasourse/aws/amazon-ec2_rev2.json
-
                     ansible-playbook configure.yml -u ubuntu --key-file Ansible/key.pem -i hosts
                 '''
                 }//dir
