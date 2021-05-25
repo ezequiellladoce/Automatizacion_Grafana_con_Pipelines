@@ -4,7 +4,7 @@ pipeline {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
         PYTHON_PATH="/usr/bin/python2.7"
         AWS_DEFAULT_REGION = 'us-east-2'
-        SERVER_IP = '1.1.1.1'
+        SERVER_IP = 'default'
     }
     options {
       disableConcurrentBuilds()
@@ -100,6 +100,8 @@ pipeline {
                 sh 'ls -l'
                 dir('ConfigGrafana'){
                 sh 'echo SERVER_IP=$(cat server_ip)'
+                sh "export SERVER_IP=$(cat server_ip)"
+                sh 'env'
                 sh '''
                     #!/bin/bash
                     ls
