@@ -4,6 +4,7 @@ pipeline {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
         PYTHON_PATH="/usr/bin/python2.7"
         AWS_DEFAULT_REGION = 'us-east-2'
+        SERVER_IP = '1.1.1.1'
     }
     options {
       disableConcurrentBuilds()
@@ -68,7 +69,10 @@ pipeline {
                     sh 'terraform apply -auto-approve'
                     sh 'echo "[grafana_server]" > hosts'
                     sh 'terraform output pub_ip >> hosts'
+                    sh 'touch server_ip'
+                    sh 'terraform output pub_ip > server_ip'
                     sh 'mv hosts ../Ansible'
+                    sh 'mv server_ip ../ConfigGrafana'
                 }//dir
             } // steps
         } // stage
@@ -86,6 +90,26 @@ pipeline {
                     chmod 400 key.pem
                     ansible -i hosts -m ping grafana_server -u ubuntu --key-file key.pem
                     ansible-playbook playbook.yml -u ubuntu --key-file key.pem -i hosts
+                '''
+                }//dir
+            } // steps
+        } // stage
+        stage('Configure Grafana') {
+            environment {
+              SERVER_IP = sh(script: 'cat server_ip' ).trim()
+            }
+            steps{
+                sh 'pwd'
+                sh 'ls -l'
+                dir('ConfigGrafana'){
+                sh '''
+                    #!/bin/bash
+                    ls
+                    pwd
+                    ls -l
+                    aws s3 cp s3://grafanadatasourse/aws/amazon-ec2_rev2.json
+
+                    ansible-playbook configure.yml -u ubuntu --key-file Ansible/key.pem -i hosts
                 '''
                 }//dir
             } // steps
