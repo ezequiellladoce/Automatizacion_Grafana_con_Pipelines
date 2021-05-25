@@ -100,6 +100,7 @@ pipeline {
                 sh 'ls -l'
                 dir('ConfigGrafana'){
                 sh 'echo SERVER_IP=$(cat server_ip)'
+                sh 'echo $SERVER_IP'
                 sh 'export SERVER_IP=$(cat server_ip)'
                 sh 'env'
                 sh '''
