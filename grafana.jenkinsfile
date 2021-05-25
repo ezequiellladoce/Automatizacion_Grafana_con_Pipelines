@@ -105,7 +105,7 @@ pipeline {
                     ls
                     pwd
                     ls -l
-                    ansible-playbook configure.yml -u ubuntu --key-file Ansible/key.pem -i hosts
+                    ansible-playbook configure.yml -u ubuntu --key-file Ansible/key.pem -i Ansible/hosts
                 '''
                 }//dir
             } // steps
