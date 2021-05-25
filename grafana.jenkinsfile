@@ -105,6 +105,8 @@ pipeline {
                     ls
                     pwd
                     ls -l
+                    aws s3 cp s3://grafanadatasourse/aws/amazon-ec2_rev2.json dashboard-ec2.json
+                    mv dashboard-ec2.json /grafana_config/tasks
                     ansible-playbook configure.yml -u ubuntu --key-file ../Ansible/key.pem -i ../Ansible/hosts
                 '''
                 }//dir
