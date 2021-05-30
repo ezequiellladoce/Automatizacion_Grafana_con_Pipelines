@@ -71,11 +71,9 @@ pipeline {
                       terraform apply -auto-approve
                       echo "[grafana_server]" > hosts
                       terraform output pub_ip >> hosts
-                      touch server_ip
                       terraform output pub_ip > server_ip
                       mv hosts ../Ansible
-                      mv server_ip ../ConfigGrafana
-                  '''   
+                  '''
                 }//dir
             } // steps
         } // stage
