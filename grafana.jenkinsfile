@@ -23,7 +23,6 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -la'
                 cleanWs()
-                sh 'env'
             }//step
         }//stage
         stage('install Ec2 grafana ') {
@@ -37,13 +36,7 @@ pipeline {
                     userRemoteConfigs: [
                     [url: 'https://github.com/ezequiellladoce/EC2_Grafana.git', credentialsId: '']
                     ]])
-                    sh'ls'
-                    sh 'pwd'
-                    sh 'ls -l'
-                    sh 'terraform --version'
-                    sh 'terraform init'
-                    sh 'terraform plan'
-                    sh 'terraform apply -auto-approve'
+                    sh 'terraform_bash.sh'
             }//steps
         } //stage
         stage('Get public ip') {
@@ -62,11 +55,7 @@ pipeline {
                 dir('Output_ip'){
                     sh'ls'
                     sh 'pwd'
-                    sh 'ls -l'
-                    sh 'terraform --version'
-                    sh 'terraform init'
-                    sh 'terraform plan'
-                    sh 'terraform apply -auto-approve'
+                    sh '../terraform_bash.sh'
                     sh 'echo "[grafana_server]" > hosts'
                     sh 'terraform output pub_ip >> hosts'
                     sh 'touch server_ip'
