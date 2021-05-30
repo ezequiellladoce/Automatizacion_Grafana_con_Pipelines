@@ -36,7 +36,7 @@ pipeline {
                     userRemoteConfigs: [
                     [url: 'https://github.com/ezequiellladoce/EC2_Grafana.git', credentialsId: '']
                     ]])
-                    sh 'terraform_bash.sh'
+                    sh '../terraform_bash.sh'
             }//steps
         } //stage
         stage('Get public ip') {
