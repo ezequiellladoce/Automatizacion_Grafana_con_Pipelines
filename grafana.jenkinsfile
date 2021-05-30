@@ -27,7 +27,6 @@ pipeline {
         }//stage
         stage('install Ec2 grafana ') {
             steps{
-
                     checkout([$class: 'GitSCM',
                     branches: [[name: '*/main']],
                     doGenerateSubmoduleConfigurations: false,
@@ -36,9 +35,15 @@ pipeline {
                     userRemoteConfigs: [
                     [url: 'https://github.com/ezequiellladoce/EC2_Grafana.git', credentialsId: '']
                     ]])
-                    sh 'pwd'
-                    sh 'ls -l'
-                    sh './terraform_bash.sh'
+                    sh '''
+                        #!/bin/bash
+                        pwd
+                        ls -l
+                        terraform --version
+                        terraform init
+                        terraform plan
+                        terraform apply -auto-approve
+                    '''    
             }//steps
         } //stage
         stage('Get public ip') {
