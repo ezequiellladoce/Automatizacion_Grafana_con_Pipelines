@@ -1,4 +1,4 @@
-# Automatización Con Jenkins de despliegue de sevidor Grafna dentro de Infraestructura de red Existente.
+# Automatización con Jenkins de sevidor Grafna dentro de Infraestructura de red Existente.
 
 En este repositorio automatizaremos con Jenkins el despliegue de un servidor grafana dentro de una infraestructura de red core de acuerdo  al repositorio  https://github.com/ezequiellladoce/Deploy_Jenkins_in_Created_Infra.git. Utilizaremos:
 
