@@ -36,7 +36,7 @@ pipeline {
                     userRemoteConfigs: [
                     [url: 'https://github.com/ezequiellladoce/EC2_Grafana.git', credentialsId: '']
                     ]])
-                    sh 'terraform_bash.sh'
+                    sh './terraform_bash.sh'
             }//steps
         } //stage
         stage('Get public ip') {
@@ -55,7 +55,7 @@ pipeline {
                 dir('Output_ip'){
                     sh'ls'
                     sh 'pwd'
-                    sh '../terraform_bash.sh'
+                    sh './terraform_bash.sh'
                     sh 'echo "[grafana_server]" > hosts'
                     sh 'terraform output pub_ip >> hosts'
                     sh 'touch server_ip'
@@ -79,27 +79,6 @@ pipeline {
                     chmod 400 key.pem
                     ansible -i hosts -m ping grafana_server -u ubuntu --key-file key.pem
                     ansible-playbook playbook.yml -u ubuntu --key-file key.pem -i hosts
-                '''
-                }//dir
-            } // steps
-        } // stage
-        stage('Configure Grafana') {
-            steps{
-                sh 'pwd'
-                sh 'ls -l'
-                dir('ConfigGrafana'){
-                sh '''
-                    #!/bin/bash
-                    ls
-                    pwd
-                    ls -l
-                    echo "SERVER_IP=$(cat server_ip)"
-                    echo $SERVER_IP
-                    SERVER_IP=$(cat server_ip)
-                    env
-                    aws s3 cp s3://grafanadatasourse/aws/amazon-ec2_rev2.json dashboard-ec2.json
-                    mv dashboard-ec2.json grafana_config/tasks
-                    ansible-playbook configure.yml -u ubuntu --key-file ../Ansible/key.pem -i ../Ansible/hosts
                 '''
                 }//dir
             } // steps
