@@ -43,7 +43,7 @@ pipeline {
                         terraform init
                         terraform plan
                         terraform apply -auto-approve
-                    '''    
+                    '''
             }//steps
         } //stage
         stage('Get public ip') {
@@ -61,15 +61,21 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -l'
                 dir('Output_ip'){
-                    sh'ls'
-                    sh 'pwd'
-                    sh './terraform_bash.sh'
-                    sh 'echo "[grafana_server]" > hosts'
-                    sh 'terraform output pub_ip >> hosts'
-                    sh 'touch server_ip'
-                    sh 'terraform output pub_ip > server_ip'
-                    sh 'mv hosts ../Ansible'
-                    sh 'mv server_ip ../ConfigGrafana'
+                  sh '''
+                      #!/bin/bash
+                      ls
+                      pwd
+                      terraform --version
+                      terraform init
+                      terraform plan
+                      terraform apply -auto-approve
+                      echo "[grafana_server]" > hosts
+                      terraform output pub_ip >> hosts
+                      touch server_ip
+                      terraform output pub_ip > server_ip
+                      mv hosts ../Ansible
+                      mv server_ip ../ConfigGrafana
+                  '''   
                 }//dir
             } // steps
         } // stage
