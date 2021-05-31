@@ -74,8 +74,7 @@ Creamos en el sevidor Jenkins un nuevo Job y elejimos la opción pipeline, Luego
 
 Vamos hasta plipeline y configuramos:
 
-
-
+![image](https://user-images.githubusercontent.com/67485607/120208727-1a45d380-c22e-11eb-970e-090779c1dd8e.png)
 
 - Definition        ----> Pipeline Script from GitSCM
 - SCM               ----> Git
