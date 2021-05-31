@@ -85,3 +85,5 @@ Vamos hasta plipeline y configuramos:
 Guardamos y corremos el Job
 
 ### Resultado Obtenido
+
+![image](https://user-images.githubusercontent.com/67485607/120209063-84f70f00-c22e-11eb-97c6-c6b71e1f745e.png)
