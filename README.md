@@ -70,8 +70,7 @@ ansible-playbook playbook.yml -u ubuntu --key-file key.pem -i hosts
 
 Creamos en el sevidor Jenkins un nuevo Job y elejimos la opción pipeline, Luego  OK
 
-
-
+![image](https://user-images.githubusercontent.com/67485607/120206408-7529fb80-c22b-11eb-98b5-bae4aa061a41.png)
 
 Vamos hasta plipeline y configuramos:
 
